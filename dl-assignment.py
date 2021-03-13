@@ -21,7 +21,7 @@ if page.status_code / 100 != 2:
 md = markdownify(page.content)
 # replace link not starting with a character [a-z] (either protocol or domain)
 # like root relative reference or hash, prefix with the base url
-md = re.sub(r"]\(([^a-b])", r"](https://unifr.coursc.ch\1", md)
+md = re.sub(r"]\(([^a-z])", r"](https://unifr.coursc.ch/\1", md)
 
 
 print(md)
