@@ -1,0 +1,40 @@
+\documentclass{standalone}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{forest}
+\forestset{
+  qtree/.style={
+    baseline,
+    for tree={
+      parent anchor=south,
+      child anchor=north,
+      draw,
+      align=center,
+      rounded corners,
+      inner sep=5pt,
+    }}}
+\usepackage{flexisym}
+
+\begin{document}
+
+\begin{forest}
+qtree,
+[main
+    [$i \leftarrow $\\$j \leftarrow $
+        [statement sequence
+            [{=} [\&$i$][$1$]]
+            [{=} [\&$j$][$2$]]
+            [swap2, l sep+=2em
+                [$*i \leftarrow 1$, edge label={node[pos=0.3,left,text=gray] {arg1}}]
+                [$*j \leftarrow 2$, edge label={node[pos=0.7,left,text=gray] {arg2}}]
+                [$temp \leftarrow $, edge label={node[midway,right,text=gray] {body}} [statement sequence
+                    [{=} [$temp$][$*i$, edge label={node[midway,text=gray,right] {$1$}}]]
+                    [{=} [$*i$][$*j$, edge label={node[midway,text=gray,right] {$2$}}]]
+                    [{=} [$*j$][$temp$, edge label={node[midway,text=gray,right] {$1$}}]]
+                ]]
+            ]
+        ]
+    ]
+]
+\end{forest}
+\end{document}

@@ -53,7 +53,9 @@ When declaring an \verb!extern! function or variable, we expect it to be declare
 In the error log of \verb!gcc!, we can also see that the compile prefix our variable with an underscore.
 Which must be some way to avoid confusion between the variables he should handle in a special manner.
 
-\begin{lstlisting}[language={}]
+\pagebreak
+
+\begin{lstlisting}[language={},caption={Error message of gcc}]
 Undefined symbols for architecture x86_64:
 "_c", referenced from:
     _main in global1-145fb1.o
@@ -86,32 +88,52 @@ void main() {
 }
 \end{lstlisting}
 
-
+\pagebreak
 \newquestion{draw the stack, data and text segments, and the CPU registers of
 g(2+1) of f()'s first argument}
 
-\todo{}
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.9\textwidth]{s05/ex2-1}
+    \caption{Stack segment, data segment and CPU registers of g(2+1) call\label{fig:ex2-1}}
+\end{figure}
 
 
 
+\pagebreak
 \question{For the following questions, only the stack segments, at the point where the next instruction to be executed is the last semicolon ; of the function calls:}
+
 
 \newquestion{g(n) of f()'s body}
 
-\todo{}
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.3\textwidth]{s05/ex2-2}
+    \caption{Stack segment of the g(n) call inside the f() body\label{fig:ex2-2}}
+\end{figure}
 
 \newquestion{f(...) of main()'s body}
 
-\todo{}
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.35\textwidth]{s05/ex2-3}
+    \caption{Stack segment of the f(...) call inside the main() body\label{fig:ex2-3}}
+\end{figure}
 
 \newquestion{main()}
 
-\todo{}
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.35\textwidth]{s05/ex2-4}
+    \caption{Stack segment at the end of the main() body\label{fig:ex2-4}}
+\end{figure}
 
 
 %
 %
 % ---------------------------------
+\bigskip
+\bigskip
 \section{Pointers as Function Argument + Simplified Stack Segments}
 
 \newquestion{Draw the simplified (e.g. without the pc and fp pointers) stack segments for the function calls:}
@@ -119,21 +141,42 @@ g(2+1) of f()'s first argument}
 \begin{enumerate}[label={\questioncolor1.\arabic*.}]
     \item \question{swap1(i, j)}
 
-    \todo{}
+    \begin{figure}[H]
+        \center
+        \includegraphics[width=0.3\textwidth]{s05/ex3-1-1}
+        \caption{Stack segment of swap1(i, j) call\label{fig:ex3-1-1}}
+    \end{figure}
 
+    \pagebreak
     \item \question{swap1(\&i, \&j)}
 
-    \todo{}
+    \begin{figure}[H]
+        \center
+        \includegraphics[width=0.3\textwidth]{s05/ex3-1-2}
+        \caption{Stack segment of swap1(\&i, \&j) call\label{fig:ex3-1-2}}
+    \end{figure}
 \end{enumerate}
 
 \newquestion{Then redo the Exercise 3 of Series 4, but this time for the function swap2()}
 
-\todo{}
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.4\textwidth]{s05/ex3-2}
+    \caption{swap2 call control flow\label{fig:ex3-2}}
+\end{figure}
+
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.7\textwidth]{ex3-2-swap-ast/swap-ast}
+    \caption{swap2 call AST\label{fig:swap2-ast}}
+\end{figure}
 
 
 %
 %
 % ---------------------------------
+\bigskip
+\bigskip
 \section{Malloc + Heap Segment}
 
 
@@ -146,18 +189,25 @@ ip = malloc(sizeof int);
 \end{lstlisting}
 
 
-\todo{}
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.4\textwidth]{s05/ex4-1}
+    \caption{Stack and heap segments of the given program\label{fig:ex4-1}}
+\end{figure}
 
 
+\pagebreak
 \newquestion{And why is the casting (int *)malloc(sizeof int) not necessary?}
 
-\todo{}
+The casting is not necessary as any pointer have the same size/format anyway and the compiler helps doing the cast implicitely.
 
 
 
 %
 %
 % ---------------------------------
+\bigskip
+\bigskip
 \section{Calculator: A Stack Machine}
 
 
@@ -174,6 +224,7 @@ ip = malloc(sizeof int);
 \end{enumerate}
 
 
+\pagebreak
 \newquestion{About static local variables. Refactor getop() in the simplified case where it handles only operators and non-negative integers (and no floats as in the original version; this simplified code is present as comment in the full version) so that it doesn't need to use ungetch(), nor getch(). Test your solution on machine.}
 \\{\color{Gray} \textbf{Hint} -- use an internal static variable buf.}
 
@@ -219,6 +270,8 @@ As they must be accessible in different methods: \verb!push!/\verb!pop! or \verb
 Including those header file at the top of a source file, will make sure that the compile knows that we are most likely gonna use the methods with the signature present in the header files. Methods that are implemented in their own \verb!.c! files.
 The linker will later do his job to bind method calls to the proper method implementation.
 
+
+\pagebreak
 \newquestion{Why are these files not protected by a conditional directive \#ifndef (the case for stack.c is tricky)?}
 
 It is better practice, especially when going back in time when compiling a running programs took much longer. Therefore, it was better to skip of going over the same header file twice.
