@@ -1,0 +1,189 @@
+\input{../model}
+
+
+\title{
+    %\vspace{-2cm}
+    \unilogo[0.3\textwidth]\\[0.9cm]
+    S06: Pointers and Arrays + Stack and Heap Segments, Pointers and typedef
+}
+\student{
+    A. Schaller\\
+    \texttt{16-896-375}
+}
+\prof{Dr. Luggen Michael}
+
+\seriesnumber{6}
+\author{\thestudent\theprof}
+\lhead{\unilogo}
+\rhead{\thestudent\\\theseriesnumber}
+
+% \usepackage[backend=bibtex, style=numeric, citestyle=numeric, sorting=none, backref, backrefstyle=none]{biblatex}
+% use "biber report" command to generate
+
+% \addbibresource{biblio.bib}
+
+
+% \usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=newest}
+% \usepackage{fontawesome}
+
+\lstset{
+    language=C,
+    basicstyle=\footnotesize,
+    stepnumber=3,
+    firstnumber=1,
+}
+
+\raggedbottom % To avoid stretching the items to fill a page
+% ---------------------- DOCUMENT ----------------------------
+\begin{document}
+
+%
+%
+% ---------------------------------
+\section{Pointers and Arrays + Stack and Heap Segments}
+
+\newquestion{Draw the stack and heap segments just when the PC register points to the last semicolon ; of the following compound statements (assuming that local arrays are stored in the heap segment):}
+
+\begin{enumerate}
+    \item \
+    \begin{lstlisting}
+int i;
+int j = 1;
+int *p = &j
+int**q = &p
+int ***r = &q
+i = ***r + 1;
+    \end{lstlisting}
+
+    \item \
+    \begin{lstlisting}
+int i;
+int tab[3];
+int *p = tab;
+++p;
+++p;
+i = p - tab;
+tab[0] = 1;
+(tab+1)[0] = 2;
+*p = 3;
+    \end{lstlisting}
+
+    \item \
+    \begin{lstlisting}
+int *p = malloc(2*sizeof(int));
+p[0]=4;
+p[2]=5;
+    \end{lstlisting}
+\end{enumerate}
+
+
+
+%
+%
+% ---------------------------------
+\section{Complicated Declarations}
+
+Explain in your own words:
+
+\begin{enumerate}
+    \item Declare and allocate a 2-dimensional array with 3 rows of 2 columns. In the end, will allocate $3*2 = 6$ spaces for \emph{int}s.
+    \begin{lstlisting}
+int a[3][2];
+    \end{lstlisting}
+
+    \item Following the `\emph{C programming Spiral Rule}'\footnotelink{http://c-faq.com/decl/spiral.anderson.html}{March 2021}(alternatively to the hint\footnotelink{https://cdecl.org}{March 2021}), $b$ is an array of size 3 of pointers to \emph{int}s. Meaning, when unreferencing the pointer, we will have access to an array holding a 3 integers.
+    \begin{lstlisting}
+int *b[3];
+    \end{lstlisting}
+
+    \item Still following the \emph{Spiral Rule}\footnotemark[1], the variable $c$ is a pointer to a function without any parameter returning an integer.
+    \begin{lstlisting}
+int (*c)();
+    \end{lstlisting}
+
+    \item $d$ holds a function which accept as parameter a pointer to a function ($e$) which doesn't accept any parameter and the pointed function $e$ returns an integer, which finally $d$ return an integer.
+    \begin{lstlisting}
+int d(int (*e)());
+    \end{lstlisting}
+
+    \item $f$ holds a function which doesn't accept any parameter and return a pointer to a function which also doesn't accept any parameter and return an int.
+    \begin{lstlisting}
+int (*f())();
+    \end{lstlisting}
+\end{enumerate}
+
+%
+%
+% ---------------------------------
+\section{typedef Definitions}
+
+\newquestion{The following}\verb!typedef!\question{define some very common new types. Indicate their names and their corresponding defined types.}
+
+\begin{enumerate}
+    \item The following \verb!typedef! named \verb!stackt! is a synonym to pointer of type \verb!void!.
+    \begin{lstlisting}
+typedef void *stackt;
+    \end{lstlisting}
+
+    \item \verb!fctInt_t! is a synonym for a pointer to a function which accept a parameter integer and return an integer.
+    \begin{lstlisting}
+typedef int (*fctInt_t)(int);
+    \end{lstlisting}
+
+    \item \verb!fct_gen! is a synonym for a pointer to a function which accept a pointer \verb!void! as parameter and return a pointer \verb!void!.
+    \begin{lstlisting}
+typedef void *(*fct_gen)(void *);
+    \end{lstlisting}
+
+    \item \verb!signal! is a synonym for a function which accept 2 parameters: $1.$ an integer, $2.$ a pointer to a function which accepted an integer and return \verb!void!, and return a pointer to function accepting a integer and return \verb!void!.
+    \begin{lstlisting}
+typedef void ( *signal(int, void (*)(int)) )(int);
+// typedef void (* f_1)(int);
+// typedef f_1 signal(int, void (*)(int));
+    \end{lstlisting}
+\end{enumerate}
+
+
+%
+%
+% ---------------------------------
+\section{Pointer to Function + typedef}
+
+\question{Consider the following program}
+
+\begin{lstlisting}
+typedef int (*mathFunc_t)(int, int); // definition of type mathFunc_t
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int mult(int a, int b) {
+    return a * b;
+}
+
+int compute(mathFunc_t f, int a, int b) {
+    return f(a, b);
+}
+
+int main() {
+    mult(add(2, 4), 8);
+    compute(mult, compute(add, 2, 4), 8);
+    return 0;
+}
+\end{lstlisting}
+
+
+\begin{enumerate}
+    \item \newquestion{What is the return value of mult() and compute()?}
+
+    It prints twice the value $\boldsymbol{48}$.
+
+    \item \newquestion{Draw the simplified stack segments when the PC register points respectively to the last semicolon ; of the function calls in line 1 and 2 of main().}
+
+
+\end{enumerate}
+
+
+\end{document}
