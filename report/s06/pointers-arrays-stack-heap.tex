@@ -38,6 +38,8 @@
 % ---------------------- DOCUMENT ----------------------------
 \begin{document}
 
+\maketitle
+
 %
 %
 % ---------------------------------
@@ -45,6 +47,7 @@
 
 \newquestion{Draw the stack and heap segments just when the PC register points to the last semicolon ; of the following compound statements (assuming that local arrays are stored in the heap segment):}
 
+\pagebreak
 \begin{enumerate}
     \item \
     \begin{lstlisting}
@@ -55,6 +58,12 @@ int**q = &p
 int ***r = &q
 i = ***r + 1;
     \end{lstlisting}
+
+    \begin{figure}[H]
+        \center
+        \includegraphics[width=0.4\textwidth]{s06/ex1-1}
+        \caption{Stack and heap segments of the snippet \theenumi\label{fig:ex1-1}}
+    \end{figure}
 
     \item \
     \begin{lstlisting}
@@ -69,12 +78,25 @@ tab[0] = 1;
 *p = 3;
     \end{lstlisting}
 
+    \begin{figure}[H]
+        \center
+        \includegraphics[width=0.4\textwidth]{s06/ex1-2}
+        \caption{Stack and heap segments of the snippet \theenumi\label{fig:ex1-2}}
+    \end{figure}
+
+    \pagebreak
     \item \
     \begin{lstlisting}
 int *p = malloc(2*sizeof(int));
 p[0]=4;
 p[2]=5;
     \end{lstlisting}
+
+    \begin{figure}[H]
+        \center
+        \includegraphics[width=0.4\textwidth]{s06/ex1-3}
+        \caption{Stack and heap segments of the snippet \theenumi\label{fig:ex1-3}}
+    \end{figure}
 \end{enumerate}
 
 
@@ -82,9 +104,11 @@ p[2]=5;
 %
 %
 % ---------------------------------
+\bigskip
+\bigskip
 \section{Complicated Declarations}
 
-Explain in your own words:
+\newquestion{Explain in your own words:}
 
 \begin{enumerate}
     \item Declare and allocate a 2-dimensional array with 3 rows of 2 columns. In the end, will allocate $3*2 = 6$ spaces for \emph{int}s.
@@ -116,6 +140,8 @@ int (*f())();
 %
 %
 % ---------------------------------
+\bigskip
+\bigskip
 \section{typedef Definitions}
 
 \newquestion{The following}\verb!typedef!\question{define some very common new types. Indicate their names and their corresponding defined types.}
@@ -148,6 +174,7 @@ typedef void ( *signal(int, void (*)(int)) )(int);
 %
 %
 % ---------------------------------
+\pagebreak
 \section{Pointer to Function + typedef}
 
 \question{Consider the following program}
@@ -175,15 +202,44 @@ int main() {
 \end{lstlisting}
 
 
-\begin{enumerate}
-    \item \newquestion{What is the return value of mult() and compute()?}
+\newquestion{What is the return value of mult() and compute()?}
 
-    It prints twice the value $\boldsymbol{48}$.
+It prints twice the value $\boldsymbol{48}$.
 
-    \item \newquestion{Draw the simplified stack segments when the PC register points respectively to the last semicolon ; of the function calls in line 1 and 2 of main().}
+\newquestion{Draw the simplified stack segments when the PC register points respectively to the last semicolon ; of the function calls in line 1 and 2 of main().}
 
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.5\textwidth]{s06/ex4-2-11}
+    \caption{Simplified stack segment after \textit{mult} call\label{fig:ex4-2-11}}
+\end{figure}
 
-\end{enumerate}
+\pagebreak
+For the second \verb!compute! call, as I didn't find an example of a stack segment with such encapsulated calls, I would have guessed the stack segment would go through the following steps. After the inner, \verb!compute(add, 2, 4)! being completed, its related elements on the stack would be discarded, and the final \verb!compute(mult, 6, 8)! would override elements on the stack to finish with \simpleref{fig:ex4-2-23}.
+
+\begin{center}
+\begin{minipage}{0.43\textwidth}
+    \begin{figure}[H]
+        \center
+        \includegraphics[width=1\textwidth]{s06/ex4-2-21}
+        \caption{Intermediate stack segment\label{fig:ex4-2-21}}
+    \end{figure}
+\end{minipage}%
+\qquad%
+\begin{minipage}{0.43\textwidth}
+    \begin{figure}[H]
+        \center
+        \includegraphics[width=1\textwidth]{s06/ex4-2-22}
+        \caption{Stack segment with highlighted elements getting discarded\label{fig:ex4-2-22}}
+    \end{figure}
+\end{minipage}
+\end{center}
+
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.5\textwidth]{s06/ex4-2-23}
+    \caption{Final stack segment\label{fig:ex4-2-23}}
+\end{figure}
 
 
 \end{document}
