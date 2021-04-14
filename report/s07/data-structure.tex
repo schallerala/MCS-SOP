@@ -1,0 +1,370 @@
+\input{../model}
+
+
+\title{
+    %\vspace{-2cm}
+    \unilogo[0.3\textwidth]\\[0.9cm]
+    S07: Data Structure
+}
+\student{
+    A. Schaller\\
+    \texttt{16-896-375}
+}
+\prof{Dr. Luggen Michael}
+
+\seriesnumber{7}
+\author{\thestudent\theprof}
+\lhead{\unilogo}
+\rhead{\thestudent\\\theseriesnumber}
+
+% \usepackage[backend=bibtex, style=numeric, citestyle=numeric, sorting=none, backref, backrefstyle=none]{biblatex}
+% use "biber report" command to generate
+
+% \addbibresource{biblio.bib}
+
+
+% \usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=newest}
+% \usepackage{fontawesome}
+
+\lstset{
+    language=C,
+    basicstyle=\footnotesize,
+    stepnumber=3,
+    firstnumber=1,
+}
+
+\raggedbottom % To avoid stretching the items to fill a page
+% ---------------------- DOCUMENT ----------------------------
+\begin{document}
+
+\maketitle
+
+%
+%
+% ---------------------------------
+\section{Some Linked List Data Structures}
+
+\newquestion{Using struct, declare the data structure of the following structures:}
+
+\begin{enumerate}[label={\questioncolor\arabic*.}]
+    \item \question{a linked list}
+
+\begin{lstlisting}
+struct node {
+    int data;
+    struct node * next;
+};
+\end{lstlisting}
+
+    Or replace the \verb!int data! with the type expected to be in the structure, or replace it with a pointer, which will be using the same amount of memory to point to any data.
+
+
+    \item \question{a doubly linked list}
+
+\begin{lstlisting}
+struct node {
+    int data;
+    struct node * previous;
+    struct node * next;
+};
+\end{lstlisting}
+
+    \textit{Same comment as the previous linked list.}
+
+    \item \question{a linked binary tree}
+
+\begin{lstlisting}
+struct node {
+    int data;
+    struct node * left;
+    struct node * right;
+};
+\end{lstlisting}
+
+    \textit{Same comment}.
+
+\end{enumerate}
+
+
+
+
+%
+%
+% ---------------------------------
+\section{Pointer Manipulation}
+
+\newquestion{Define a data structure that corresponds to the sketch in \namedref{fig:fig1}{Fig.1.}, and implement the function void swap\_ptr() allowing to swap the two top elements as showed in \namedref{fig:fig1}{Fig.1.}.}
+
+{\color{gray} \textbf{Remark} -- To simplify the implementation of swap\_ptr(), we
+assume that the data structure contains at least 2 nodes, i.e. no error
+checking has to be performed. Beware that your solution should also work
+when the structure contains only 2 nodes.}
+
+
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.7\textwidth]{s07/swap_ptr.png}
+    \label{fig:fig1}
+\end{figure}
+
+
+The \namedref{fig:fig1}{Fig.1.} represent a \emph{simple linked list} and the swap operation is equivalent to swapping the payload of the head with its previous node's payload (even though the name isn't really representative of the behavior).
+
+\begin{lstlisting}
+struct node {
+    int data;
+    struct node * next;
+};
+
+void swap_ptr(struct node * head) {
+    int headData = head->data;
+    int nextData = head->next->data;
+
+    head->data = nextData;
+    head->next->data = headData;
+}
+\end{lstlisting}
+
+%
+%
+% ---------------------------------
+\section{Queue}
+
+\newquestion{Study the \href{https://unifr.coursc.ch/7/linked_list_stack.c}{linked\_list\_stack.c}\footnotelink{https://unifr.coursc.ch/7/linked_list_stack.c}{April 2021}
+source code and transform it to implement a queue. A queue is a data
+structure in which objects are accessed in FIFO (First In First Out)
+order. New objects are inserted at the end of the queue (enqueue).
+Object is removed from the beginning (dequeue).}
+
+{\color{gray}\textbf{Hint} -- to easily access the end of the queue, you need to store
+an additional pointer to the last element of your linked list. Create a
+structure struct Queue which will store the head node and tail node of
+the list.}
+
+
+\begin{figure}[H]
+    \center
+    \includegraphics[width=0.9\textwidth]{s07/stack_queue}
+    \label{fig:stack_queue}
+\end{figure}
+
+
+\begin{lstlisting}{caption={Naive implementation of a Queue}}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node * next;
+};
+
+struct Queue {
+    struct Node * head;
+    struct Node * tail;
+};
+
+void printLinkedlist(struct Node * p);
+
+void enqueue (struct Queue * q, struct Node * newTail) {
+    if (q->tail) {
+        q->tail->next = newTail;
+    }
+    // if we don't have a tail, we neither have a head, unless external
+    // change
+    else {
+        q->head = newTail;
+    }
+
+    // If we allow enqueuing a tail with multiple nodes, then we have
+    // to look for the deepst tail
+    // -- Possible improvement? --
+    q->tail = newTail;
+}
+
+void enqueue_value (struct Queue * q, int value) {
+    struct Node * newNode = malloc(sizeof(newNode));
+    newNode->data = value;
+    enqueue(q, newNode);
+}
+
+struct Node * dequeue (struct Queue * q) {
+    struct Node * head = q->head;
+
+    if (head) {
+        q->head = head->next;
+        head->next = 0;
+    }
+
+    return head;
+}
+
+int main () {
+    struct Queue * q = malloc(sizeof(q));
+    enqueue_value(q, 2);
+    enqueue_value(q, 5);
+    enqueue_value(q, 10);
+
+    printLinkedlist(q->head);
+
+    struct Node * node = dequeue(q);
+    printf("Dequeued element: %d (next: %p)\n", node->data, node->next);
+
+    struct Node last = { 15, 0 };
+    enqueue(q, &last);
+
+    printLinkedlist(q->head);
+}
+\end{lstlisting}
+
+
+%
+%
+% ---------------------------------
+\section{Graph}
+
+\newquestion{Study the
+\href{https://unifr.coursc.ch/7/minimal_tree.c}{minimal\_tree.c}\footnotelink{https://unifr.coursc.ch/7/minimal_tree.c}{April 2021} source
+code. Suggest a new data structure to be able to express directed graphs
+instead of trees:}
+
+
+\begin{itemize}
+    \item \question{Modify the struct node structure and the newNode function.}
+
+\begin{lstlisting}
+// 1. modifiy the struct
+struct LinkedNode {
+    struct GraphNode * target;
+    struct LinkedNode * next;
+};
+
+struct GraphNode {
+    int data;
+    struct LinkedNode * directed_relations;
+};
+
+// 2. modifiy the newNode function
+struct GraphNode * new_graph_node (int data) {
+    struct GraphNode * newNode = malloc(sizeof(newNode));
+    newNode->data = data;
+    newNode->directed_relations = 0;
+    return newNode;
+}
+\end{lstlisting}
+
+    \item \question{Write an additional function connect which allows to connect two arbitrary nodes in your graph.}
+
+\begin{lstlisting}
+struct LinkedNode * new_linked_node (struct GraphNode * g) {
+    struct LinkedNode * newNode = malloc(sizeof(newNode));
+    newNode->target = g;
+    newNode->next = 0;
+    return newNode;
+}
+
+void connect (struct GraphNode * source, struct GraphNode * target) {
+    // should maybe also check if the target is not in the directed_relations list
+    struct LinkedNode * last_relation = source->directed_relations;
+    struct LinkedNode * new_relation_target = new_linked_node(target);
+    if (last_relation) {
+        while (last_relation->next) {
+            last_relation = last_relation->next;
+        }
+
+        last_relation->next = new_relation_target;
+    }
+    // no directed_relations yet
+    else {
+        source->directed_relations = new_relation_target;
+    }
+}
+\end{lstlisting}
+
+
+\end{itemize}
+
+A running example using those different structures and functions:
+\begin{lstlisting}
+void print_relations (struct GraphNode * node) {
+    int data = node->data;
+    printf("%d", data);
+    if ( ! node->directed_relations) {
+        // has no directed relation
+        printf(" has no directed relations\n");
+    }
+
+    struct LinkedNode * r = node->directed_relations;
+    printf(" relations:");
+    while (r) {
+        printf(" %d", r->target->data);
+        r = r->next;
+    }
+    printf("\n");
+}
+
+/*
+* Example graph to build:
+*
+*              5
+*            / |
+*           /  |
+*          /   |
+*         v    v
+*         2-+  1  +-->4
+*         \ +--+--+ / ^
+*          \   |   / /
+*           \  |  / /
+*            \ | / /
+*             vvv /
+*              3
+*/
+
+int main () {
+    struct GraphNode * top = new_graph_node(5);
+    struct GraphNode * left = new_graph_node(2);
+    struct GraphNode * middle = new_graph_node(1);
+    struct GraphNode * right = new_graph_node(4);
+    struct GraphNode * bottom = new_graph_node(3);
+
+    connect(top, left);
+    connect(top, middle);
+
+    connect(left, right);
+    connect(left, bottom);
+
+    connect(middle, bottom);
+
+    connect(right, bottom);
+
+    connect(bottom, right);
+
+    print_relations(top);
+    print_relations(left);
+    print_relations(middle);
+    print_relations(right);
+    print_relations(bottom);
+}
+\end{lstlisting}
+
+And its output:
+
+\begin{lstlisting}[language={}]
+5 relations: 2 1
+2 relations: 4 3
+1 relations: 3
+4 relations: 3
+3 relations: 4
+\end{lstlisting}
+
+
+
+%
+%
+% ---------------------------------
+\section{Project P01: Linked Data In-Memory Store}
+
+\newquestion{Think about the data structure you want to use for your storage. Describe it, its advantages and potential pitfalls.}
+
+
+\end{document}
