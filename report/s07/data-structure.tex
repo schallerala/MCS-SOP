@@ -364,7 +364,119 @@ And its output:
 % ---------------------------------
 \section{Project P01: Linked Data In-Memory Store}
 
+% new tcolorbox environment
+% #1: tcolorbox options
+% #2: color
+% #3: box title
+\newtcolorbox{mybox}[2][]
+{
+  colframe = #2!25,
+  colback  = #2!10,
+  coltitle = #2!20!black,
+  #1,
+}
+
+
+
 \newquestion{Think about the data structure you want to use for your storage. Describe it, its advantages and potential pitfalls.}
+
+\begin{mybox}{blue}
+\emph{this chapter is in common for the whole group}
+\end{mybox}
+
+\subsection{Definition of basic data structures used for our store}
+
+\begin{tcolorbox}
+\verb!vector!
+\end{tcolorbox}
+
+List of variable size. Operations:
+\begin{itemize}
+    \item
+    insertion: amortized $O(1)$
+    \item
+    access: $O(1)$
+\end{itemize}
+
+
+\bigskip
+\begin{tcolorbox}
+\verb!hashmap!
+\end{tcolorbox}
+
+Map from keys to values. Operations:
+\begin{itemize}
+    \item
+    insertion: $O(1)$ key hashes
+    \item
+    access: $O(1)$ key hashes + key comparisons (assuming good hash function)
+\end{itemize}
+
+
+
+\subsection{Structure of the store}
+We want to answer 8 different kind of queries: \verb!{SPO}, {SP}, {SO}, {PO}, {S}, {P}, {O}, {}!
+
+We use a separate hashmap for each of those type of queries. The key is the known values (for example, \verb!S! and \verb!P! for the type \verb!{SP}!). The value is a vector of pointers to the matching triples.
+
+The triples themselves are stored in the heap.
+
+\bigskip
+\begin{tcolorbox}
+\verb!access (match(s, p, o, result))!
+\end{tcolorbox}
+
+\begin{enumerate}
+    \item
+    Determine the type of the query by looking at the parameters \verb!"s"!, \verb!"p"! and \verb!"o"! (for example \verb!{SP}!) $\rightarrow O(1)$
+    \item
+    Access the corresponding hashmap using the known values (for example \verb!"s"! and \verb!"p"!) to retrieve the list (vector) of all matching triples $\rightarrow O(1)$ \emph{key hashes + key comparisons (assuming good hash function)}
+    \item
+    Access the retrieved vector to get the desired triple (at the index given by the parameter "result") $\rightarrow O(1)$
+\end{enumerate}
+
+The "key comparison" and "key hash" operations time complexity grows linearly with the size of the known data (strings) (for example \verb!"s"! and \verb!"p"!).
+
+$\Rightarrow$ Overall time complexity: $O(n)$ where n is the size of the known data (\textbf{does not grow with the number of triples in the store}).
+
+\bigskip
+\begin{tcolorbox}
+\verb!insertion (insert(s, p, o))!
+\end{tcolorbox}
+
+\begin{enumerate}
+    \item
+    Allocate memory to store the new triple in the heap
+    \item
+    For all 8 type of queries $\rightarrow O(1)$
+    \begin{enumerate}
+        \item
+        Access the corresponding hashmap using the known values (for example \verb!"s"! and \verb!"p"!) to retrieve the list (vector) of all matching triples $\rightarrow O(1)$ key hashes + key comparisons (assuming good hash function)
+        \item
+        Insert the pointer to the new triple in the retrieved vector $\rightarrow$ amortized $O(1)$
+    \end{enumerate}
+\end{enumerate}
+
+The "key comparison" and "key hash" operations time complexity grows linearly with the size of the known data (for example \verb!"s"! and \verb!"p"!).
+
+$\Rightarrow$ Overall time complexity: $O(n)$ where n is the size of the given data (strings) (\textbf{does not grow with the number of triples in the store}).
+
+
+
+\subsection{Advantages and pitfalls}
+\begin{enumerate}[label={$\boldsymbol{+}$}]
+    \item
+    very fast insertion and access (assuming good hash function)
+\end{enumerate}
+\bigskip
+\begin{enumerate}[label={$\boldsymbol{-}$}]
+    \item
+    requires the implementation of the basic data structures (vector and hashmap)
+    \item
+    if implemented, deletion of arbitrary triples will have worst-case $O(n)$ time complexity where n is the number of triples in the store (potential solution: do not really delete the triple, mark it with a "deleted" flag, and the caller of "match" is responsible to check if the triple is deleted and does not use it in that case)
+\end{enumerate}
+
+
 
 
 \end{document}
