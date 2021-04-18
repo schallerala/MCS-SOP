@@ -92,6 +92,8 @@ struct node {
 %
 %
 % ---------------------------------
+\bigskip
+\bigskip
 \section{Pointer Manipulation}
 
 \newquestion{Define a data structure that corresponds to the sketch in \namedref{fig:fig1}{Fig.1.}, and implement the function void swap\_ptr() allowing to swap the two top elements as showed in \namedref{fig:fig1}{Fig.1.}.}
@@ -150,7 +152,7 @@ the list.}
 \end{figure}
 
 
-\begin{lstlisting}{caption={Naive implementation of a Queue}}
+\begin{lstlisting}
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -165,7 +167,10 @@ struct Queue {
 };
 
 void printLinkedlist(struct Node * p);
+\end{lstlisting}
 
+\pagebreak
+\begin{lstlisting}[caption={Naive implementation of a Queue}]
 void enqueue (struct Queue * q, struct Node * newTail) {
     if (q->tail) {
         q->tail->next = newTail;
@@ -262,7 +267,6 @@ struct LinkedNode * new_linked_node (struct GraphNode * g) {
     newNode->next = 0;
     return newNode;
 }
-
 void connect (struct GraphNode * source, struct GraphNode * target) {
     // should maybe also check if the target is not in the directed_relations list
     struct LinkedNode * last_relation = source->directed_relations;
@@ -362,20 +366,9 @@ And its output:
 %
 %
 % ---------------------------------
+\bigskip
+\bigskip
 \section{Project P01: Linked Data In-Memory Store}
-
-% new tcolorbox environment
-% #1: tcolorbox options
-% #2: color
-% #3: box title
-\newtcolorbox{mybox}[2][]
-{
-  colframe = #2!25,
-  colback  = #2!10,
-  coltitle = #2!20!black,
-  #1,
-}
-
 
 
 \newquestion{Think about the data structure you want to use for your storage. Describe it, its advantages and potential pitfalls.}
@@ -414,6 +407,7 @@ Map from keys to values. Operations:
 
 
 
+\pagebreak
 \subsection{Structure of the store}
 We want to answer 8 different kind of queries: \verb!{SPO}, {SP}, {SO}, {PO}, {S}, {P}, {O}, {}!
 
@@ -463,6 +457,7 @@ $\Rightarrow$ Overall time complexity: $O(n)$ where n is the size of the given d
 
 
 
+\pagebreak
 \subsection{Advantages and pitfalls}
 \begin{enumerate}[label={$\boldsymbol{+}$}]
     \item

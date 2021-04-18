@@ -173,6 +173,20 @@ Notice:
     xleftmargin=17pt,
 }
 
+
+% https://tex.stackexchange.com/a/172480/164820
+% new tcolorbox environment
+% #1: tcolorbox options
+% #2: color
+\newtcolorbox{mybox}[2][]
+{
+  colframe = #2!25,
+  colback  = #2!10,
+  coltitle = #2!20!black,
+  #1,
+}
+
+
 \loadglsentries{../glossary}
 \makeglossaries
 
