@@ -1,0 +1,162 @@
+\input{../model}
+
+
+\title{
+    %\vspace{-2cm}
+    \unilogo[0.3\textwidth]\\[0.9cm]
+    S08: File System
+}
+\student{
+    A. Schaller\\
+    \texttt{16-896-375}
+}
+\prof{Dr. Luggen Michael}
+
+\seriesnumber{8}
+\author{\thestudent\theprof}
+\lhead{\unilogo}
+\rhead{\thestudent\\\theseriesnumber}
+
+% \usepackage[backend=bibtex, style=numeric, citestyle=numeric, sorting=none, backref, backrefstyle=none]{biblatex}
+% use "biber report" command to generate
+
+% \addbibresource{biblio.bib}
+
+
+% \usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=newest}
+% \usepackage{fontawesome}
+
+\lstset{
+    language=C,
+    basicstyle=\footnotesize,
+    stepnumber=3,
+    firstnumber=1,
+}
+
+\lstset{literate=%
+    {ß}{{\ss}}1
+    {ç}{{\c{c}}}1
+    {~}{{\textasciitilde}}1
+}
+
+\raggedbottom % To avoid stretching the items to fill a page
+% ---------------------- DOCUMENT ----------------------------
+\begin{document}
+
+\maketitle
+
+
+%
+%
+% ---------------------------------
+\section{Create the function to\_upper(s)}
+
+\question{Create the function to\_upper(s) which takes a String s as input and returns a String where all ASCII letters (a-z) are transformed to upper case, the other characters stay the same.}
+
+
+\newquestion{Create one version which uses toupper(c) from \textless ctype.h\textgreater}
+
+\begin{lstlisting}
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+
+char * lib_upper (char * string) {
+    int len = strlen(string);
+    char * new_string = malloc(len);
+
+    for (int i = 0; i < len; i++) {
+        new_string[i] = toupper(string[i]);
+    }
+
+    return new_string;
+}
+\end{lstlisting}
+
+\newquestion{Then extent the program with a function implementing your self toupper(c).
+{\color{gray}\textbf{Hint}: To reimplement toupper(c) inspect closely the ASCII table of the lower, and upper case letters. The solution can be realized with simple arithmetic!}}
+
+\begin{lstlisting}
+char * own_upper (char * string) {
+    int len = strlen(string);
+    char * new_string = malloc(len);
+
+    for (int i = 0; i < len; i++) {
+        char c = string[i];
+        new_string[i] = c;
+        if (c >= 'a' && c <= 'z') {
+            new_string[i] += 'A' - 'a';
+        }
+    }
+
+    return new_string;
+}
+\end{lstlisting}
+
+Small main function to print our results:
+\begin{lstlisting}
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main () {
+    char s1[] = "Français";
+    char s2[] = "spaß";
+    printf("%s -> lib upper: %s\n", s1, lib_upper(s1));
+    printf("%s -> lib upper: %s\n", s2, lib_upper(s2));
+
+    printf("%s -> own upper: %s\n", s1, own_upper(s1));
+    printf("%s -> own upper: %s\n", s2, own_upper(s2));
+
+    return 1;
+}
+\end{lstlisting}
+
+
+%
+%
+% ---------------------------------
+\section{Write a program which writes to stdout and stderr.}
+
+\newquestion{Write a tiny program which outputs alternating ``hey!'' to stdout and then ``ho!'' to stderr. In between the two output of the program shall sleep for 1 second.}
+
+\begin{lstlisting}
+#include <stdio.h>
+#include <unistd.h>
+
+int main () {
+    while(1) {
+        fprintf(stdout, "hey!\n");
+        sleep(1);
+        fprintf(stderr, "ho!\n");
+        sleep(1);
+    }
+}
+\end{lstlisting}
+
+
+\newquestion{Write a bash command which writes all outputs of the stdout to the file hey.txt and all the output of the stderr to the file ho.txt}
+
+\begin{lstlisting}[language={}]
+./ex2 >> ./hey.txt 2>> ./ho.txt
+\end{lstlisting}
+
+
+%
+%
+% ---------------------------------
+\section{Project P01: Linked Data In-Memory Store}
+
+\question{After the project set-up with some dummy information try to define some data ``by hand'' and start to work on the match() function.}
+
+\begin{itemize}
+    \item \question{Define a data structure which you then fill with some example
+    information statically (see the example from the \href{https://unifr.coursc.ch/\#projet}{project description}\footnotelink{https://unifr.coursc.ch/\#projet}{April 2021}). Make
+    sure to define it outside the match() function.}
+
+  \item \question{As a first step see if you can printf() all the triples which match the char* S variable.}
+\end{itemize}
+
+\end{document}
